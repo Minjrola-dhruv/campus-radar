@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'fragmentholder.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   String _currentRoute = '/';
-  
+
   String? _filterCity;
   String? _filterDate;
 
@@ -78,7 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.blue.shade50,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.radar, color: Colors.blueAccent, size: 20),
+              child: const Icon(
+                Icons.radar,
+                color: Colors.blueAccent,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 8),
             const Text(
@@ -96,7 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.filter_list, color: (_filterCity != null || _filterDate != null) ? Colors.blueAccent : Colors.grey),
+                icon: Icon(
+                  Icons.filter_list,
+                  color: (_filterCity != null || _filterDate != null)
+                      ? Colors.blueAccent
+                      : Colors.grey,
+                ),
                 onPressed: _showFilterBottomSheet,
               ),
               if (_filterCity != null || _filterDate != null)
@@ -115,7 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 10.0, bottom: 10.0),
+            padding: const EdgeInsets.only(
+              right: 16.0,
+              top: 10.0,
+              bottom: 10.0,
+            ),
             child: ElevatedButton.icon(
               onPressed: () => _navigateTo('/add'),
               icon: const Icon(Icons.add, size: 16, color: Colors.white),
@@ -123,7 +135,9 @@ class _HomeScreenState extends State<HomeScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 padding: const EdgeInsets.symmetric(horizontal: 16),
               ),
             ),
@@ -139,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// ─── Filter Bottom Sheet ──────────────────────────────────────────────────────
 
 class FilterBottomSheet extends StatefulWidget {
   final String? initialCity;
@@ -167,6 +182,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       _cityController.text = widget.initialCity!;
     }
     if (widget.initialDate != null) {
+      // Need to parse back to DateTime or just keep as string.
+      // For simplicity in filter UI, we can re-select date.
+      // If we used a robust format we could parse it. We'll leave it simple.
     }
   }
 
@@ -179,9 +197,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1565C0),
-            ),
+            colorScheme: const ColorScheme.light(primary: Color(0xFF1565C0)),
           ),
           child: child!,
         );
@@ -212,7 +228,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             children: [
               const Text(
                 'Filter Placements',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1565C0),
+                ),
               ),
               IconButton(
                 icon: const Icon(Icons.close),
@@ -241,11 +261,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   DropdownMenuEntry(value: 'Noida', label: 'Noida'),
                 ],
                 inputDecorationTheme: InputDecorationTheme(
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 ),
               );
-            }
+            },
           ),
           const SizedBox(height: 16),
           InkWell(
@@ -261,12 +283,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   const Icon(Icons.calendar_today_outlined, color: Colors.grey),
                   const SizedBox(width: 12),
                   Text(
-                    _selectedDate == null 
-                      ? (widget.initialDate ?? 'Filter by Date') 
-                      : DateFormat('MMM dd').format(_selectedDate!),
+                    _selectedDate == null
+                        ? (widget.initialDate ?? 'Filter by Date')
+                        : "${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][_selectedDate!.month - 1]} ${_selectedDate!.day.toString().padLeft(2, '0')}",
                     style: TextStyle(
-                      fontSize: 16, 
-                      color: (_selectedDate == null && widget.initialDate == null) ? Colors.grey.shade600 : Colors.black87
+                      fontSize: 16,
+                      color:
+                          (_selectedDate == null && widget.initialDate == null)
+                          ? Colors.grey.shade600
+                          : Colors.black87,
                     ),
                   ),
                 ],
@@ -284,7 +309,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: const Text('Clear Filters'),
                 ),
@@ -295,17 +322,27 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   onPressed: () {
                     String? city = _cityController.text.trim();
                     if (city.isEmpty) city = null;
-                    String? date = _selectedDate != null ? DateFormat('MMM dd').format(_selectedDate!) : widget.initialDate;
-                    
+                    String? date = _selectedDate != null
+                        ? "${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][_selectedDate!.month - 1]} ${_selectedDate!.day.toString().padLeft(2, '0')}"
+                        : widget.initialDate;
+
                     widget.onApply(city, date);
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1565C0),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text('Apply', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'Apply',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -317,13 +354,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 }
 
+// ─── Placement List Widget ────────────────────────────────────────────────────
 
 class PlacementListWidget extends StatelessWidget {
   final List<Map<String, String>> data;
   final Function(String) onDelete;
 
   const PlacementListWidget({
-    super.key, 
+    super.key,
     required this.data,
     required this.onDelete,
   });
@@ -335,11 +373,19 @@ class PlacementListWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.search_off_outlined, size: 64, color: Colors.grey.shade400),
+            Icon(
+              Icons.search_off_outlined,
+              size: 64,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 16),
             Text(
               'No placements found.',
-              style: TextStyle(fontSize: 18, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ),
@@ -374,7 +420,11 @@ class PlacementListWidget extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     item['company']![0].toUpperCase(),
-                    style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -384,23 +434,51 @@ class PlacementListWidget extends StatelessWidget {
                     children: [
                       Text(
                         item['role'] ?? item['company']!,
-                        style: const TextStyle(color: Color(0xFF1565C0), fontSize: 15, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Color(0xFF1565C0),
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         item['company']!,
-                        style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          Icon(Icons.location_on, size: 14, color: Colors.grey.shade500),
+                          Icon(
+                            Icons.location_on,
+                            size: 14,
+                            color: Colors.grey.shade500,
+                          ),
                           const SizedBox(width: 4),
-                          Text(item['city']!, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                          Text(
+                            item['city']!,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 12,
+                            ),
+                          ),
                           const SizedBox(width: 12),
-                          Icon(Icons.calendar_today, size: 14, color: Colors.grey.shade500),
+                          Icon(
+                            Icons.calendar_today,
+                            size: 14,
+                            color: Colors.grey.shade500,
+                          ),
                           const SizedBox(width: 4),
-                          Text(item['date']!, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                          Text(
+                            item['date']!,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -410,14 +488,21 @@ class PlacementListWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         item['package']!,
-                        style: TextStyle(color: Colors.blue.shade700, fontSize: 11, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -431,11 +516,18 @@ class PlacementListWidget extends StatelessWidget {
                             if (item.containsKey('id')) {
                               onDelete(item['id']!);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Placement deleted'), duration: Duration(seconds: 2)),
+                                const SnackBar(
+                                  content: Text('Placement deleted'),
+                                  duration: Duration(seconds: 2),
+                                ),
                               );
                             }
-                          }, 
-                          child: Icon(Icons.delete, color: Colors.red.shade400, size: 18)
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.red.shade400,
+                            size: 18,
+                          ),
                         ),
                       ],
                     ),
